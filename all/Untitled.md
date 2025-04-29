@@ -32,7 +32,7 @@ graph TD
   %% Связи внутри справочников
   Emp -->|position_id| Pos
   Emp -->|gender_id| Gen
-  EmpWork["И"] -->|employee_id| Emp
+  EmpWork["История работы сотрудника"] -->|employee_id| Emp
   EmpWork -->|position_id| Pos
 
   SupProd["SupplierProducts"] -->|supplier_id| Sup

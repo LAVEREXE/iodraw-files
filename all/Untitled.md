@@ -52,7 +52,7 @@ graph TD
 
   WT -->|employee_id| Emp
   WT -->|month_id| Mon
-  WTDay["WorkTimeDays"] -->|worktime_id| WT
+  WTDay["Jn"] -->|worktime_id| WT
 
   %% Связи регистра накопления
   WP -->|nomenclature_id| Nom

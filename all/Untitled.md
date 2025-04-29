@@ -1,68 +1,88 @@
 ```mermaid
-graph TD
-  %% Подграфы для группировки
-  subgraph Справочники
-    Emp["Сотрудники"]
-    Nom["Номенклатура"]
-    Sup["Поставщики"]
-    Buy["Покупатели"]
-    Pos["Должности"]
-    Gen["Пол"]
-    Ctp["Контрагенты"]
-    Mon["Месяцы"]
+graph LR
+  %% ======== Справочники ========
+  subgraph СПРАВОЧНИКИ
+    direction TB
+    Emp[Сотрудники]
+    Nom[Номенклатура]
+    Sup[Поставщики]
+    Buy[Покупатели]
+    Pos[Должности]
+    Gen[Пол]
+    Ctp[Контрагенты]
+    Mon[Месяцы]
   end
 
-  subgraph Документы
-    GR["Поступление товаров"]
-    GS["Продажа товаров"]
-    GW["Списание товаров"]
-    HO["Приказ о приёме на работу"]
-    WT["Учёт рабочего времени"]
+  %% ======== Табличные части справочников ========
+  EmpWH[ТрудоваяДеятельность]
+  SupProd[ТоварыПоставщика]
+
+  %% ======== Документы ========
+  subgraph ДОКУМЕНТЫ
+    direction TB
+    GR[Поступление товаров]
+    GS[Продажа товаров]
+    GW[Списание товаров]
+    HO[Приказ о приёме на работу]
+    WT[Учёт рабочего времени]
   end
 
-  subgraph Регистры
-    WP["ТоварыНаСкладе"]
+  %% ======== Табличные части документов ========
+  GRL[СтрокиПоступления]
+  GSL[СтрокиПродажи]
+  GWL[СтрокиСписания]
+  WTD[РабочиеДни]
+
+  %% ======== Регистр накопления ========
+  subgraph РЕГИСТРЫ
+    direction TB
+    WP[ТоварыНаСкладе]
   end
 
-  subgraph Отчёты
-    SR["Отчёт по остаткам"]
-    WTR["Отчёт учёта\nрабочего времени"]
+  %% ======== Отчёты ========
+  subgraph ОТЧЁТЫ
+    direction TB
+    SR[Отчёт по остаткам]
+    WTR[Отчёт учёта\nрабочего времени]
   end
 
-  %% Связи внутри справочников
+  %% ======== Связи справочников ========
   Emp -->|position_id| Pos
   Emp -->|gender_id| Gen
-  EmpWork["История работы сотрудника"] -->|employee_id| Emp
-  EmpWork -->|position_id| Pos
+  EmpWH -->|employee_id| Emp
+  EmpWH -->|position_id| Pos
 
-  SupProd["Постав"] -->|supplier_id| Sup
+  SupProd -->|supplier_id| Sup
   SupProd -->|nomenclature_id| Nom
 
-  %% Связи документов со справочниками
-  GR -->|counterparty_type_id| Ctp
-  GR -->|lines→nomenclature_id| Nom
+  %% ======== Связи документов ========
+  GR -->|контрагент| Ctp
+  GRL -->|receipt_id| GR
+  GRL -->|товар| Nom
 
-  GS -->|counterparty_type_id| Ctp
-  GS -->|cashier_id| Emp
-  GS -->|lines→nomenclature_id| Nom
+  GS -->|контрагент| Ctp
+  GS -->|кассир| Emp
+  GSL -->|sale_id| GS
+  GSL -->|товар| Nom
 
-  GW -->|lines→nomenclature_id| Nom
+  GWL -->|writeoff_id| GW
+  GWL -->|товар| Nom
 
-  HO -->|employee_id| Emp
+  HO -->|сотрудник| Emp
 
-  WT -->|employee_id| Emp
-  WT -->|month_id| Mon
-  WTDay["Отработано дней"] -->|worktime_id| WT
+  WT -->|сотрудник| Emp
+  WT -->|месяц| Mon
+  WTD -->|worktime_id| WT
 
-  %% Связи регистра накопления
-  WP -->|nomenclature_id| Nom
+  %% ======== Связи регистра ========
+  WP -->|товар| Nom
 
-  %% Связи отчётов
-  SR -->|uses| WP
-  WTR -->|uses| WTDay
+  %% ======== Связи отчётов ========
+  SR -->|использует| WP
+  WTR -->|использует| WTD
 
-  %% Дополнительные связи (опционально)
-  Sup -->|counterparty_type_id| Ctp
-  Buy -->|counterparty_type_id| Ctp
+  %% ======== Доп. связи ========
+  Sup -->|тип| Ctp
+  Buy -->|тип| Ctp
 
 ```

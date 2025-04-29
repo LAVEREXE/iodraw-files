@@ -35,7 +35,7 @@ graph TD
   EmpWork["История работы сотрудника"] -->|employee_id| Emp
   EmpWork -->|position_id| Pos
 
-  SupProd["SupplierProducts"] -->|supplier_id| Sup
+  SupProd["Постав"] -->|supplier_id| Sup
   SupProd -->|nomenclature_id| Nom
 
   %% Связи документов со справочниками
